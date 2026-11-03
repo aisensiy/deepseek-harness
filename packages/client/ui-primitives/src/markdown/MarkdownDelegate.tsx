@@ -3,6 +3,8 @@ import { createContext, useContext, useMemo } from 'react'
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { FileDragActions } from '../file-drag-actions.ts'
 import type { ImageLightboxLabels } from '../ImageLightbox.tsx'
+import type { PropsRenderFactories } from '@deepseek-ai/dsh-client-ui-slots'
+import type {} from './link-actions.ts'
 
 /**
  * Handle one sanitized absolute HTTP(S) URL selected from Markdown.
@@ -18,6 +20,8 @@ export type MarkdownMenuTarget =
 
 /** Navigation capabilities supplied by the nearest Markdown owner. */
 export interface MarkdownDelegate {
+  /** Framework Factory renderer for inline actions; omitted outside a registered Markdown owner. */
+  readonly renderFactorySlot?: PropsRenderFactories['renderFactorySlot'] | undefined
   /** Open an object menu without executing its normal activation. */
   readonly getTriggerProps?: ((target: MarkdownMenuTarget) => Pick<HTMLAttributes<HTMLElement>, 'onContextMenu' | 'onKeyDown' | 'tabIndex'>) | undefined
   /**
@@ -59,9 +63,10 @@ export function MarkdownDelegateProvider({
   openFile,
   fileImages,
   getTriggerProps,
+  renderFactorySlot,
 }: MarkdownDelegateProviderProps): ReactNode {
-  const delegate = useMemo(() => ({ openExternalLink, openFile, fileImages, getTriggerProps }),
-    [openExternalLink, openFile, fileImages, getTriggerProps])
+  const delegate = useMemo(() => ({ openExternalLink, openFile, fileImages, getTriggerProps, renderFactorySlot }),
+    [openExternalLink, openFile, fileImages, getTriggerProps, renderFactorySlot])
   return (
     <MarkdownDelegateContext.Provider value={delegate}>
       {children}

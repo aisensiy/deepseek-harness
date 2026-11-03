@@ -240,6 +240,7 @@ const unusedFactoryProps = {
   inputActions: {
     insertQuote: unusedFrameworkProp,
     captureInsertion: unusedFrameworkProp,
+    insertReference: unusedFrameworkProp, focus: unusedFrameworkProp,
     insertText: unusedFrameworkProp,
     setDraft: unusedFrameworkProp,
     persistDraft: unusedFrameworkProp,

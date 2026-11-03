@@ -105,6 +105,7 @@ function props(
     inputActions: {
       insertQuote: () => false,
       captureInsertion: unused,
+      insertReference: unused, focus: unused,
       insertText: unused,
       setDraft: unused,
       persistDraft: unused,

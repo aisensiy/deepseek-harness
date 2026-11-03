@@ -59,7 +59,7 @@ const MOTION_TAIL_MS = 800
  * ordered business Node crosses the keyed renderer seat.
  */
 export function ChatView({
-  useSession, useChat, useConversation, useSessions, renderSlot,
+  useSession, useChat, useConversation, useSessions, renderSlot, renderFactorySlot,
   sessionId, openFile, openExternalLink, resolveFilePath, useContextMenu,
   loadOlder, loadThrough, loadImage, inspectCall, chatScroll, forkAt,
   usePresentation, useProjection, useInteractionIds, dispatchInteraction, t, fileDrag,
@@ -244,6 +244,7 @@ export function ChatView({
               </div>
             )}
             <MarkdownDelegateProvider
+              renderFactorySlot={renderFactorySlot}
               getTriggerProps={getMarkdownTriggerProps}
               openFile={requestOpenFile}
               openExternalLink={openExternalLink}

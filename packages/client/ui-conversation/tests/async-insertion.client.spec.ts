@@ -36,3 +36,27 @@ it('refuses results captured before a user edit or after editor disposal', () =>
   input.dispose()
   expect(input.actions.insertText('late voice', latest)).toBe(false)
 })
+
+it('inserts a reference through public actions without replacing text or accepting stale results', () => {
+  const input = shell()
+  const focus = vi.spyOn(input, 'focus').mockImplementation(() => {})
+  const reference = { source: 'resource', ref: 'project:42', label: 'Tutorial', clipboardText: '[Tutorial](https://example.com/42)' }
+  try {
+    input.setDraft('Inspect ')
+    const stale = input.actions.captureInsertion()
+    input.setDraft('My newer instruction ')
+    expect(input.actions.insertReference(reference, stale)).toBe(false)
+    expect(input.state.getSnapshot().draft).toBe('My newer instruction ')
+    expect(input.actions.insertReference(reference, input.actions.captureInsertion())).toBe(true)
+    expect(input.state.getSnapshot().draft).toContain('My newer instruction ')
+    expect(input.state.getSnapshot().occurrences).toHaveLength(1)
+    expect(input.state.getSnapshot().phase).toBe('plain')
+    input.actions.focus()
+    expect(focus).toHaveBeenCalledOnce()
+    const latest = input.actions.captureInsertion()
+    input.dispose()
+    expect(input.actions.insertReference(reference, latest)).toBe(false)
+    input.actions.focus()
+    expect(focus).toHaveBeenCalledOnce()
+  } finally { input.dispose() }
+})

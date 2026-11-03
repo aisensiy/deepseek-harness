@@ -142,6 +142,8 @@ export class SessionInputShell implements SessionInput {
   readonly actions: InputActions = {
     insertQuote: text => this.insertQuote(text),
     captureInsertion: () => ({ ...this.caretSpan(), draftRev: this.rev }),
+    insertReference: (reference, span) => !this.disposed && this.insertReference(reference, span),
+    focus: () => { if (!this.disposed) this.focus() },
     insertText: (text, span) => {
       if (frozen(this.snapshot.phase) || this.disposed) return false
       if (span.draftRev !== this.rev) return false

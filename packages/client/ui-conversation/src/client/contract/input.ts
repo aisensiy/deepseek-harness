@@ -260,6 +260,14 @@ export interface InputActions {
   insertQuote(text: string): boolean
   /** @returns a revision-guarded copy of the current editor selection. */
   captureInsertion(): TokenSpan
+  /** Insert a source-owned reference at a captured selection without submitting.
+   * @param reference - Stable identity and display label owned by a registered source.
+   * @param span - Captured selection and draft revision.
+   * @returns false after intervening edits, editor disposal, or submission locking.
+   */
+  insertReference(reference: ReferenceInsert, span: TokenSpan): boolean
+  /** Return focus to this Session's composer without changing its selection. */
+  focus(): void
   /**
    * Insert asynchronous text without replacing subsequent edits or reference chips.
    * @param text - plain text to insert in one undo step.

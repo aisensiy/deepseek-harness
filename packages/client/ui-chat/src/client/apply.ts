@@ -36,6 +36,7 @@ import { ChatView } from './chat/ChatView.tsx'
 import { ChatFlow } from './chat/ChatFlow.tsx'
 import { registerChatNodeRenderers } from './chat/register-node-renderers.ts'
 import { UserContent } from './chat/UserContent.tsx'
+import { MarkdownLinkActions } from './chat/MarkdownLinkActions.tsx'
 import { ActivityPill, UsagePill } from './chat/StatsPills.tsx'
 import { registerConversationNodes } from './conversation-nodes/register.ts'
 import { QuotaNoticeHost } from './chat/QuotaNoticeHost.tsx'
@@ -178,6 +179,10 @@ export function apply(ctx: Context): void {
     name: 'conversation.chat.user.content', scope: 'session', locale: NS,
     children: { 'conversation.chat.user.images': { kind: 'single', scope: 'session' } },
   }, UserContent)
+  ctx.slots.registerFactory({
+    name: 'markdown.link.actions', scope: 'session',
+    children: { 'markdown.link.actions.items': { kind: 'list', scope: 'session', inline: true } },
+  }, MarkdownLinkActions)
 
   ctx.slots.inject('settings.general.item', () => ctx.slots.register({
     name: 'settings.general.item',

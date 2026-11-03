@@ -1,0 +1,23 @@
+- text: List resources. {{clock}}
+- button "Copy"
+- status: Completed
+- button "Completed in {{duration}}" [disabled]
+- list:
+  - listitem:
+    - link "Resource 42":
+      - /url: https://resources.example.test/project/42
+    - button "Reference Resource 42"
+  - listitem:
+    - link "Unclaimed link":
+      - /url: https://other.example.test/guide
+- button "Copy"
+- button "Good response"
+- button "Bad response"
+- button "Branch into a new conversation"
+- text: {{clock}}
+- textbox "Message or run a task, / commands, @ files or sessions"
+- button "Add files or run commands"
+- 'button "Access mode, current: Workspace Write"': Workspace Write
+- button "Select model, current DeepSeek-V4-Flash": DeepSeek-V4-Flash
+- button "Send message" [disabled]
+- button "1 turns 1 steps"

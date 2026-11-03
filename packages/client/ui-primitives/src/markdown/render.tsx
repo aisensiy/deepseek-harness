@@ -349,7 +349,7 @@ function renderNode(node: Md.RootContent, key: Key, context: MarkdownRenderConte
       // authored text, not a parsed destination, so no normalizeUri: port,
       // path, and query render unchanged.
       const href = inlineCodeHttpUrl(value)
-      if (href !== undefined) return <code key={key}>{renderSafeLink(href, [value], 'link')}</code>
+      if (href !== undefined) return <code key={key}>{renderSafeLink(href, [value], 'link', true, !context.streaming)}</code>
       // A token the owner's file-mention vocabulary recognizes opens that
       // file; the resolver, not this renderer, decides what names a file.
       // Inside an anchor the token stays inert — a button cannot nest there.
@@ -582,34 +582,38 @@ function anchorWrapsOnlyImages(children: Md.PhrasingContent[]): boolean {
 }
 
 /** Anchor over a safe absolute href, with optional owner navigation for HTTP(S). */
-function renderSafeLink(href: string, children: ReactNode[], key: Key, glyph = true): ReactNode {
+function renderSafeLink(href: string, children: ReactNode[], key: Key, glyph = true, settled = true): ReactNode {
   const safeHref = sanitizeUrl(href)
   if (safeHref === '') return <Fragment key={key}>{children}</Fragment>
-  return <MarkdownAnchor key={key} href={safeHref} glyph={glyph}>{children}</MarkdownAnchor>
+  return <MarkdownAnchor key={key} href={safeHref} glyph={glyph} settled={settled}>{children}</MarkdownAnchor>
 }
 
-function MarkdownAnchor({ href, glyph, children }: {
+function MarkdownAnchor({ href, glyph, children, settled }: {
   readonly href: string
   readonly glyph: boolean
+  readonly settled: boolean
   readonly children: ReactNode[]
 }): ReactNode {
-  const { openExternalLink, getTriggerProps } = useMarkdownDelegate()
+  const { openExternalLink, getTriggerProps, renderFactorySlot } = useMarkdownDelegate()
   const external = ['http:', 'https:'].includes(new URL(href).protocol)
   const open = external ? openExternalLink : undefined
   return (
-    <a
-      href={href}
-      {...external ? getTriggerProps?.({ kind: 'url', url: href }) : {}}
-      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      onClick={open === undefined ? undefined : (event) => {
-        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-        event.preventDefault()
-        open(href)
-      }}
-    >
-      {glyph && <LinkIconMedium kind="url" href={href} className={css.linkIcon} />}
-      {children}
-    </a>
+    <>
+      <a
+        href={href}
+        {...external ? getTriggerProps?.({ kind: 'url', url: href }) : {}}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        onClick={open === undefined ? undefined : (event) => {
+          if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+          event.preventDefault()
+          open(href)
+        }}
+      >
+        {glyph && <LinkIconMedium kind="url" href={href} className={css.linkIcon} />}
+        {children}
+      </a>
+      {external && glyph && settled && renderFactorySlot?.('markdown.link.actions', { href })}
+    </>
   )
 }
 
@@ -620,7 +624,7 @@ function renderAnchor(url: string, children: ReactNode[], key: Key, glyph = true
     if (streaming) return <Fragment key={key}>{children}</Fragment>
     return <MarkdownFileLink key={key} file={file} glyph={glyph}>{children}</MarkdownFileLink>
   }
-  return renderSafeLink(normalizeUri(url), children, key, glyph)
+  return renderSafeLink(normalizeUri(url), children, key, glyph, !streaming)
 }
 
 function MarkdownFileLink({ file, glyph, children }: {

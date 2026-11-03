@@ -195,6 +195,8 @@ Factory: conversation.user.text [UserText]
 
 Factory: conversation.images.content [MessageImagesContent / ImageGallery]
 Factory: conversation.chat.reasoning.content [ReasoningContent / MarkdownText]
+Factory: markdown.link.actions [MarkdownLinkActions]
+└─ markdown.link.actions.items [list, inline]
 ```
 
 All four image Slots default to `MessageImages`, which calls `conversation.images.content` with the caller's image references and authorized loader. User and output image replacements are independent. The `conversation.user.text` Factory is shared by user content, Queue, and Goal; its `inline: true` keyed Slot renders span anchors and inline error placeholders rather than block wrappers.

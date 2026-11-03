@@ -197,6 +197,8 @@ Factory: conversation.user.text [UserText]
 
 Factory: conversation.images.content [MessageImagesContent / ImageGallery]
 Factory: conversation.chat.reasoning.content [ReasoningContent / MarkdownText]
+Factory: markdown.link.actions [MarkdownLinkActions]
+└─ markdown.link.actions.items [list, inline]
 ```
 
 四个图片 Slot 默认均填入 `MessageImages`，由它携带调用者的图片引用和授权 loader 调用 `conversation.images.content`。用户与输出图片的替换互不影响。`conversation.user.text` Factory 由用户内容、Queue 和 Goal 共用；其 `inline: true` keyed Slot 使用 span 锚点及行内错误占位，而不是块级包装。

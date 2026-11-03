@@ -387,6 +387,7 @@ export type ChatFlowSlotProps =
 /** Full Chat view props. */
 export type ChatViewSlotProps =
   PropsRuntime<'conversation.view'>
+  & PropsRenderFactories
   & PropsRenderSlots<'conversation.chat.flow' | 'conversation.chat.text-interaction'>
   & PropsStore<ChatStore>
   & InjectFace<ChatViewInjected>
